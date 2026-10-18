@@ -2,6 +2,8 @@ import { useRef, type RefObject } from 'react'
 import { useGSAP } from '@gsap/react'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { createHeroScene } from '../motion/heroScene'
+import { createLayoutRefresh } from '../motion/layoutRefresh'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger)
 
@@ -9,7 +11,7 @@ type PortfolioMotionProps = { root: RefObject<HTMLElement | null> }
 
 // Optional enhancement: no CSS hides content before this module loads.
 export default function PortfolioMotion({ root }: PortfolioMotionProps) {
-  const introFinished = useRef(false)
+  const heroHistory = useRef({ finished: false })
 
   useGSAP(() => {
     const main = root.current
@@ -18,6 +20,7 @@ export default function PortfolioMotion({ root }: PortfolioMotionProps) {
 
     media.add({
       motion: '(prefers-reduced-motion: no-preference)',
+      wide: '(min-width: 64rem)',
       desktop: '(min-width: 64rem) and (min-height: 40rem) and (hover: hover) and (pointer: fine)',
     }, (context) => {
       if (!context.conditions?.motion) return
@@ -30,7 +33,6 @@ export default function PortfolioMotion({ root }: PortfolioMotionProps) {
       const original = all('.section-heading, .contact-intro, .about-portrait, [data-hero-part], #inicio .neural-graph, #inicio [data-graph-layer], [data-project-part="artwork"], [data-artwork-layer="diagram"], #contato .neural-graph')
         .map((element) => ({ element, attributes: ['style', 'transform', 'data-svg-origin'].map((name) => [name, element.getAttribute(name)] as const) }))
       const finite: { animation: gsap.core.Animation; area: Element; sync: () => void }[] = []
-      let refreshFrame = 0
 
       // Each finite sequence runs only while its area is on screen and the tab is visible.
       function watch(animation: gsap.core.Animation, area: Element) {
@@ -52,17 +54,11 @@ export default function PortfolioMotion({ root }: PortfolioMotionProps) {
       }
 
       const hero = select<HTMLElement>('#inicio')
-      if (hero && !introFinished.current && !location.hash && scrollY < 20) {
-        const intro = gsap.timeline({ paused: true, onComplete: () => { introFinished.current = true } })
+      const heroScene = hero ? createHeroScene(hero, Boolean(context.conditions.wide), desktop, heroHistory.current) : undefined
+      if (hero && !heroHistory.current.finished && !location.hash && scrollY < 20) {
+        const intro = gsap.timeline({ paused: true })
         intro.fromTo(all('[data-hero-part="identity"], [data-hero-part="copy"]'),
           { y: 8, opacity: 0.92 }, { y: 0, opacity: 1, duration: 0.6, stagger: 0.1, ease: 'power2.out', immediateRender: false }, 0)
-        // Moving the whole network keeps every edge attached to its nodes.
-        intro.fromTo(select('#inicio [data-graph-layer="network"]'),
-          { y: -3 }, { y: 0, duration: 3.6, ease: 'sine.inOut', immediateRender: false }, 0)
-        intro.fromTo(select('#inicio [data-graph-layer="edges"]'),
-          { opacity: 0.55 }, { opacity: 1, duration: 3.2, ease: 'sine.out', immediateRender: false }, 0)
-        intro.fromTo(select('#inicio [data-graph-layer="halos"]'),
-          { opacity: 0.4 }, { opacity: 1, duration: 3.6, ease: 'sine.out', immediateRender: false }, 0)
         watch(intro, hero)
       }
 
@@ -90,56 +86,26 @@ export default function PortfolioMotion({ root }: PortfolioMotionProps) {
         all('[data-project-part="artwork"]').forEach((element) => reveal(element, 6))
       }
 
-      // Separate targets for cursor (SVG) and scroll (outer visual) avoid transform conflicts.
-      const graph = select<SVGSVGElement>('#inicio .neural-graph')
-      let resetCursor = () => {}
-      if (desktop && hero && graph) {
-        const xTo = gsap.quickTo(graph, 'x', { duration: 0.4, ease: 'power2.out' })
-        const yTo = gsap.quickTo(graph, 'y', { duration: 0.4, ease: 'power2.out' })
-        resetCursor = () => { xTo(0).progress(1).pause(); yTo(0).progress(1).pause() }
-        hero.addEventListener('pointermove', (event) => {
-          if (document.hidden || event.pointerType === 'touch') return
-          const rect = hero.getBoundingClientRect()
-          xTo(gsap.utils.clamp(-6, 6, ((event.clientX - rect.left) / rect.width - 0.5) * 12))
-          yTo(gsap.utils.clamp(-6, 6, ((event.clientY - rect.top) / rect.height - 0.5) * 12))
-        }, { signal: events.signal, passive: true })
-        hero.addEventListener('pointerleave', () => { xTo(0); yTo(0) }, { signal: events.signal })
-      }
-
       function syncVisibility() {
         finite.forEach(({ sync }) => sync())
-        if (document.hidden) resetCursor()
+        heroScene?.syncVisibility()
       }
 
-      // Re-measure layout changes, never scroll events or animation frames.
-      function refresh() {
-        if (refreshFrame) return
-        refreshFrame = requestAnimationFrame(() => {
-          refreshFrame = 0
-          ScrollTrigger.refresh()
-        })
-      }
-      const observer = new ResizeObserver(refresh)
-      observer.observe(main)
-      const header = document.querySelector('.site-header')
-      if (header) observer.observe(header)
-      main.addEventListener('load', refresh, { capture: true, signal: events.signal })
-      main.addEventListener('toggle', refresh, { capture: true, signal: events.signal })
-      window.addEventListener('pageshow', refresh, { signal: events.signal })
+      const layout = createLayoutRefresh(main, () => ScrollTrigger.refresh())
       document.addEventListener('visibilitychange', syncVisibility, { signal: events.signal })
       main.addEventListener('focusin', (event) => {
         if (!(event.target instanceof Element)) return
         const section = event.target.closest('section')
+        if (section === hero) heroScene?.finish()
         finite.forEach(({ animation, area }) => {
           if (area === section || area.closest('section') === section) animation.totalProgress(1).pause()
         })
       }, { signal: events.signal })
-      refresh()
 
       return () => {
         events.abort()
-        observer.disconnect()
-        cancelAnimationFrame(refreshFrame)
+        layout.destroy()
+        heroScene?.destroy()
         // matchMedia has already reverted its tweens and triggers before cleanup.
         original.forEach(({ element, attributes }) => {
           gsap.set(element, { clearProps: 'transform,opacity,translate,rotate,scale' })

@@ -19,12 +19,11 @@ export function Hero() {
           <p className="hero__description">{copy.description}</p>
           <div className="action-group hero__actions">
             <ButtonLink href="#projetos">{copy.projectsLink}</ButtonLink>
-            <ButtonLink href={profile.links.github} variant="secondary" target="_blank">{copy.github}</ButtonLink>
-            <ButtonLink href={profile.links.linkedin} variant="ghost" target="_blank">{copy.linkedin}</ButtonLink>
+            <ButtonLink href="#contato" variant="secondary">{copy.contactLink}</ButtonLink>
           </div>
         </div>
         <div className="hero__visual" data-hero-part="visual" aria-hidden="true">
-          <NeuralGraph variant="hero" />
+          <NeuralGraph variant="hero" labels={copy.graphLayers} />
         </div>
       </Container>
       <Container width="wide" className="hero__continuity">

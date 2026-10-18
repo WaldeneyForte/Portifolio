@@ -37,6 +37,9 @@
     --section-heading-gap: clamp(1.5rem, 3vw, 2.25rem);
     --control-height: 2.75rem;
     --motion-duration: 180ms;
+    --text-reading: clamp(1rem, 0.97rem + 0.15vw, 1.125rem);
+    --text-meta: clamp(0.875rem, 0.85rem + 0.1vw, 0.9375rem);
+    --text-tag: clamp(0.8125rem, 0.79rem + 0.08vw, 0.875rem);
     --header-height: 5rem;
     --anchor-offset: calc(var(--header-block-size, var(--header-height)) + 1.5rem);
 
@@ -296,20 +299,19 @@
   }
 
   .hero__visual {
-    position: absolute;
-    inset-block-start: 2.5rem;
-    inset-inline-end: 0;
-    inline-size: min(55%, 18rem);
-    max-block-size: 12rem;
-    overflow: hidden;
-    z-index: -1;
-    opacity: 0.16;
+    inline-size: 100%;
+    max-inline-size: 22rem;
+    justify-self: center;
     min-inline-size: 0;
     pointer-events: none;
   }
 
   .hero__visual .neural-graph {
-    max-inline-size: none;
+    block-size: clamp(10rem, 54vw, 12rem);
+  }
+
+  .hero__visual .neural-graph--desktop {
+    display: none;
   }
 
   .hero__continuity {
@@ -359,7 +361,7 @@
 
   .item-meta {
     color: var(--color-muted);
-    font-size: 0.8125rem;
+    font-size: var(--text-meta);
     line-height: 1.7;
   }
 
@@ -448,10 +450,14 @@
   }
 
   .project-card.card {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
     padding: 0;
     scroll-margin-top: var(--anchor-offset);
+    min-inline-size: 0;
+  }
+
+  .project-card__main {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
     min-inline-size: 0;
   }
 
@@ -546,7 +552,7 @@
     margin-block: 1.25rem;
     max-inline-size: 62ch;
     color: var(--color-muted);
-    font-size: 0.9375rem;
+    font-size: var(--text-reading);
     line-height: 1.8;
   }
 
@@ -557,7 +563,13 @@
   }
 
   .project-card__status {
-    margin-block: 1.25rem;
+    margin-block: 1.25rem 0;
+  }
+
+  .project-details {
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+    border-block-start: 1px solid var(--color-border);
+    min-inline-size: 0;
   }
 
   .project-details > summary {
@@ -570,7 +582,7 @@
     border: 1px solid var(--color-control-border);
     border-radius: var(--radius-control);
     color: var(--color-foreground);
-    font-size: 0.875rem;
+    font-size: var(--text-meta);
     font-weight: 500;
     cursor: pointer;
     list-style: none;
@@ -593,12 +605,30 @@
   }
 
   .project-details__content {
+    display: grid;
+    gap: 1.5rem;
+    padding-block-start: 1.5rem;
+    min-inline-size: 0;
+  }
+
+  .project-details__body {
+    overflow-anchor: none;
+  }
+
+  .project-details__description {
+    min-inline-size: 0;
+    max-inline-size: 70ch;
+  }
+
+  .project-details__technologies {
+    min-inline-size: 0;
+    border-block-start: 1px solid var(--color-border);
     padding-block-start: 1.25rem;
   }
 
   .project-details__heading {
-    margin-block: 1.5rem 0.75rem;
-    font-size: 0.875rem;
+    margin-block: 0 0.75rem;
+    font-size: var(--text-meta);
     font-weight: 600;
     letter-spacing: 0;
   }
@@ -609,7 +639,7 @@
     padding-inline-start: 1.125rem;
     list-style: disc;
     color: var(--color-muted);
-    font-size: 0.9375rem;
+    font-size: var(--text-reading);
     line-height: 1.8;
   }
 
@@ -659,19 +689,20 @@
 
   .timeline-item__period {
     color: var(--color-muted);
-    font-size: 0.875rem;
+    font-size: var(--text-meta);
     font-weight: 500;
   }
 
   .timeline-item__organization {
     margin-block: 0.375rem;
-    font-size: 0.9375rem;
+    font-size: 1rem;
   }
 
   .timeline-item__summary {
     max-inline-size: 70ch;
     margin-block-start: 1.25rem;
     color: var(--color-muted);
+    font-size: var(--text-reading);
     line-height: 1.85;
   }
 
@@ -699,13 +730,13 @@
 
   .experience-group__title {
     font-family: var(--font-heading);
-    font-size: 1rem;
+    font-size: clamp(1.0625rem, 1rem + 0.1vw, 1.125rem);
     line-height: 1.5;
     letter-spacing: -0.015em;
   }
 
   .experience-group .content-list {
-    font-size: 0.9375rem;
+    font-size: var(--text-reading);
     line-height: 1.75;
   }
 
@@ -722,20 +753,20 @@
   .education-card__period {
     margin-block-end: 1rem;
     color: var(--color-muted);
-    font-size: 0.8125rem;
+    font-size: var(--text-meta);
     font-variant-numeric: tabular-nums;
     letter-spacing: 0.04em;
   }
 
   .education-card__organization {
     margin-block: 0.75rem 0.375rem;
-    font-size: 0.9375rem;
+    font-size: 1rem;
   }
 
   .education-card__summary {
     margin-block-start: 1rem;
     color: var(--color-muted);
-    font-size: 0.9375rem;
+    font-size: var(--text-reading);
     line-height: 1.8;
   }
 
@@ -788,7 +819,7 @@
     align-items: center;
     gap: 1rem;
     margin-block-end: 1rem;
-    font-size: 0.9375rem;
+    font-size: 1rem;
     letter-spacing: -0.015em;
   }
 
@@ -840,7 +871,7 @@
 
   .certification-card__issuer {
     color: var(--color-muted);
-    font-size: 0.875rem;
+    font-size: var(--text-meta);
     line-height: 1.6;
   }
 
@@ -855,12 +886,12 @@
 
   .credential-dates dt {
     color: var(--color-muted);
-    font-size: 0.75rem;
+    font-size: var(--text-meta);
   }
 
   .credential-dates dd {
     margin-block-start: 0.375rem;
-    font-size: 0.875rem;
+    font-size: var(--text-meta);
     line-height: 1.6;
   }
 
@@ -1064,8 +1095,21 @@
   }
 
   @media (min-width: 64rem) {
-    .project-card.card {
+    .project-card__main {
       grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+    }
+
+    .project-details__content--split {
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .project-details__technologies {
+      border-block-start: 0;
+      border-inline-start: 1px solid var(--color-border);
+      padding-block-start: 0;
+      padding-inline-start: 1.5rem;
     }
 
     .project-artwork {
@@ -1073,10 +1117,10 @@
       border-block-end: 0;
       border-inline-end: 1px solid var(--color-border);
       border-start-end-radius: 0;
-      border-end-start-radius: var(--radius-card);
+      border-end-start-radius: 0;
     }
 
-    .project-card:nth-child(even) .project-artwork {
+    .project-card:nth-child(even) > .project-card__main > .project-artwork {
       grid-column: 2;
       grid-row: 1;
       border-inline-end: 0;
@@ -1084,10 +1128,10 @@
       border-start-start-radius: 0;
       border-start-end-radius: var(--radius-card);
       border-end-start-radius: 0;
-      border-end-end-radius: var(--radius-card);
+      border-end-end-radius: 0;
     }
 
-    .project-card:nth-child(even) .project-card__content {
+    .project-card:nth-child(even) > .project-card__main > .project-card__content {
       grid-column: 1;
       grid-row: 1;
     }
@@ -1110,6 +1154,15 @@
       overflow: visible;
       z-index: auto;
       opacity: 1;
+    }
+
+    .hero__visual .neural-graph--desktop {
+      display: block;
+      block-size: auto;
+    }
+
+    .hero__visual .neural-graph--mobile {
+      display: none;
     }
   }
 
@@ -1308,7 +1361,7 @@
     border-radius: 999px;
     color: var(--color-muted);
     background: var(--color-surface-raised);
-    font-size: 0.75rem;
+    font-size: var(--text-tag);
     font-weight: 500;
     line-height: 1.6;
   }
@@ -1373,12 +1426,44 @@
   }
 
   .neural-graph--hero .neural-graph__edge {
-    stroke-width: 1.25;
+    stroke-width: 1;
+    opacity: 0.65;
   }
 
   .neural-graph--hero .neural-graph__edge--accent {
     stroke: var(--color-accent-bright);
-    opacity: 0.75;
+    stroke-width: 1.4;
+    opacity: 0.8;
+  }
+
+  .neural-graph--hero .neural-graph__field {
+    stroke: var(--color-control-border);
+    opacity: 0.45;
+  }
+
+  .neural-graph--hero .neural-graph__halos {
+    fill: rgb(220 36 60 / 5%);
+    stroke: var(--color-accent);
+    opacity: 0.5;
+  }
+
+  .neural-graph__signals {
+    fill: var(--color-foreground);
+  }
+
+  .neural-graph__labels {
+    fill: var(--color-muted);
+    font-size: 14px;
+    font-weight: 400;
+    letter-spacing: 0.025em;
+  }
+
+  .neural-graph--mobile .neural-graph__labels {
+    font-size: 18px;
+  }
+
+  .neural-graph--mobile .neural-graph__edge {
+    stroke-width: 1.4;
   }
 
   .neural-graph__edge--accent {
