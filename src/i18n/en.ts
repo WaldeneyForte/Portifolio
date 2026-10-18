@@ -1,0 +1,88 @@
+import type { Dictionary } from './types'
+
+export const en = {
+  navigation: {
+    label: 'Main navigation',
+    homeLabel: 'Waldeney Filho — home',
+    openMenu: 'Open menu',
+    closeMenu: 'Close menu',
+    skipLink: 'Skip to content',
+    items: [
+      { id: 'sobre', label: 'About', title: 'About me' },
+      { id: 'projetos', label: 'Projects', title: 'Projects' },
+      { id: 'experiencia', label: 'Experience', title: 'Professional experience' },
+      { id: 'formacao', label: 'Education', title: 'Education' },
+      { id: 'tecnologias', label: 'Skills', title: 'Skills' },
+      { id: 'certificacoes', label: 'Certifications', title: 'Certifications' },
+      { id: 'contato', label: 'Contact', title: 'Contact' },
+    ],
+  },
+  hero: {
+    eyebrow: 'AI • Machine Learning • Data',
+    headline: 'From data to models. From experiments to real applications.',
+    description: "I'm a Computer Science student working with AI for healthcare. I enjoy figuring out how models learn, turning data into useful solutions, and understanding what happens behind the frameworks.",
+    projectsLink: 'Explore projects',
+    aboutLink: 'More about me',
+    github: 'GitHub',
+    linkedin: 'LinkedIn',
+  },
+  sections: {
+    sobre: { title: 'About me', eyebrow: 'Learning by building' },
+    projetos: { title: 'Projects', eyebrow: 'Research and experimentation' },
+    experiencia: { title: 'Professional experience', eyebrow: 'AI for healthcare' },
+    formacao: { title: 'Education', eyebrow: 'Theory and practice' },
+    tecnologias: { title: 'Skills', eyebrow: 'Tools and fundamentals' },
+    certificacoes: { title: 'Certifications', eyebrow: 'Continuing education' },
+    contato: { title: 'Contact', eyebrow: "Let's talk" },
+  },
+  about: {
+    photoAlt: 'Portrait of Waldeney Filho',
+  },
+  projects: {
+    research: 'Professional research',
+    personal: 'Personal project',
+    researchStatus: 'Research project · Repository not public',
+    developmentStatus: 'In development',
+    details: 'Project details',
+    technologies: 'Technologies and topics',
+    additionalTechnologies: 'More technologies and topics',
+    repository: 'View repository',
+    affiliation: 'CPIDT',
+  },
+  skills: {
+    description: 'Tools and fundamentals from my studies and experience with AI, data and software development.',
+  },
+  certifications: {
+    professional: 'Professional certifications',
+    courses: 'Courses and certificates',
+    professionalBadge: 'Professional certification',
+    courseBadge: 'Course completion certificate',
+    issued: 'Issued',
+    expires: 'Valid until',
+    credential: 'View credential',
+  },
+  contact: {
+    title: 'Let’s build the next connection.',
+    description: 'Interested in a project or want to talk about AI and data? You can reach me here.',
+    emailLabel: 'Contact email',
+    copyEmail: 'Copy email',
+    copyingEmail: 'Copying email…',
+    emailCopied: 'Email copied!',
+    copyError: 'Could not copy. Select and copy the address above.',
+    socialIntro: 'Let’s keep the conversation going.',
+    github: 'GitHub',
+    linkedin: 'LinkedIn',
+  },
+  footer: {
+    backToTop: 'Back to top',
+  },
+  language: {
+    label: 'Language',
+    portuguese: 'PT — Portuguese',
+    english: 'EN — English',
+  },
+  meta: {
+    title: 'Waldeney Filho | AI and Data',
+    description: "Waldeney Filho's portfolio: artificial intelligence, machine learning and data science.",
+  },
+} as const satisfies Dictionary
