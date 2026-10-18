@@ -31,6 +31,7 @@ export function NeuralGraph({ className = '', variant = 'default' }: NeuralGraph
           <path className="neural-graph__field-accent" d="M86 180a154 154 0 0 1 154-154m154 154a154 154 0 0 1-154 154" />
         </g>
       )}
+      <g data-graph-layer="network">
       <g data-graph-layer="edges">
       {edges.map(([from, to], index) => (
         <line
@@ -62,6 +63,7 @@ export function NeuralGraph({ className = '', variant = 'default' }: NeuralGraph
           className={`neural-graph__node ${index === 4 || index === 8 ? 'neural-graph__node--accent' : ''}`}
         />
       ))}
+      </g>
       </g>
     </svg>
   )
