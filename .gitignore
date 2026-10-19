@@ -1,5 +1,5 @@
 # Documentação Markdown local: não enviar ao repositório
-*.md
+
 
 # Dependências e builds
 node_modules/

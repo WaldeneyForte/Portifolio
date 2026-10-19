@@ -1,6 +1,6 @@
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
-import { heroGraphDesktop, heroGraphMobile, type HeroNodeId } from '../data/heroGraph'
+import { graphEdgeAppearance, heroGraphDesktop, heroGraphMobile, type HeroNodeId } from '../data/heroGraph'
 import { graphPositions, graphSegment, graphSignal } from './graphGeometry'
 
 type HeroHistory = { finished: boolean }
@@ -30,13 +30,15 @@ export function createHeroScene(hero: HTMLElement, wide: boolean, pointer: boole
   }))
 
   const events = new AbortController()
-  const duration = wide ? 4 : 2.4
+  const detailed = wide && pointer
+  const duration = detailed ? 4 : 2.4
   const model = { morph: 1, reveal: 1, time: duration }
   const cursor = { x: 240, y: profile.height / 2, strength: 0 }
   let ended = history.finished || Boolean(location.hash) || scrollY > 24
   let destroyed = false
   let queued = false
   let advanced = false
+  let viewedFrame = 0
 
   function render() {
     if (destroyed) return
@@ -58,7 +60,7 @@ export function createHeroScene(hero: HTMLElement, wide: boolean, pointer: boole
     signalLayer!.setAttribute('opacity', '1')
     signals.forEach(({ route, element }, index) => {
       // Time windows deliberately end: there is no ambient loop after the intro.
-      const windows = wide ? (index ? [[2.85, 3.6]] : [[0.6, 1.3], [2.5, 3.25]]) : (index ? [] : [[1.4, 2.1]])
+      const windows = detailed ? (index ? [[2.5, 3.4]] : [[1.6, 2.5]]) : (index ? [] : [[1.4, 2.1]])
       const active = !ended && windows.find(([start, end]) => model.time >= start && model.time < end)
       element.style.opacity = active ? '1' : '0'
       if (!active) return
@@ -81,13 +83,14 @@ export function createHeroScene(hero: HTMLElement, wide: boolean, pointer: boole
       element.setAttribute('y1', String(segment.from.y))
       element.setAttribute('x2', String(segment.to.x))
       element.setAttribute('y2', String(segment.to.y))
-      element.style.opacity = String((edge.highlighted ? 0.8 : 0.65) * gsap.utils.clamp(0, 1, (model.reveal - 0.15) / 0.85))
+      element.style.opacity = String(graphEdgeAppearance[edge.importance].opacity * gsap.utils.clamp(0, 1, (model.reveal - 0.15) / 0.85))
     })
     halos.forEach(({ node, element }) => {
       const position = positions.get(node.id)!
       element.setAttribute('cx', String(position.x))
       element.setAttribute('cy', String(position.y))
-      element.style.opacity = String(model.reveal * 0.5)
+      const activation = pulses.reduce((value, pulse) => Math.max(value, Math.max(0, 1 - Math.hypot(pulse.x - position.x, pulse.y - position.y) / 24)), 0)
+      element.style.opacity = String(model.reveal * (0.22 + activation * 0.36))
     })
   }
 
@@ -102,8 +105,19 @@ export function createHeroScene(hero: HTMLElement, wide: boolean, pointer: boole
     if (destroyed || queued) return
     queued = true
     gsap.ticker.add(flush)
+    // GSAP can synchronously wake its ticker during StrictMode's setup/cleanup.
+    // Only a browser frame may consume the intro; this is not an ongoing loop.
+    if (!ended && !advanced && !viewedFrame) viewedFrame = requestAnimationFrame(() => {
+      viewedFrame = 0
+      if (!destroyed && !ended && !document.hidden && model.time > 0) advanced = true
+    })
   }
-  function cancelRender() { gsap.ticker.remove(flush); queued = false }
+  function cancelRender() {
+    gsap.ticker.remove(flush)
+    queued = false
+    cancelAnimationFrame(viewedFrame)
+    viewedFrame = 0
+  }
 
   function finish() {
     if (destroyed) return
@@ -119,14 +133,11 @@ export function createHeroScene(hero: HTMLElement, wide: boolean, pointer: boole
     svg!.dataset.motionState = 'rest'
   }
 
-  const intro = gsap.timeline({ paused: true, onUpdate: () => {
-    if (model.time > 0) advanced = true
-    requestRender()
-  }, onComplete: finish })
+  const intro = gsap.timeline({ paused: true, onUpdate: requestRender, onComplete: finish })
   if (!ended) {
     model.morph = model.reveal = model.time = 0
-    intro.to(model, { reveal: 1, duration: wide ? 0.6 : 0.4, ease: 'power2.out' }, 0)
-      .to(model, { morph: 1, duration: wide ? 1.2 : 1, ease: 'sine.inOut' }, wide ? 1.3 : 0.4)
+    intro.to(model, { reveal: 1, duration: detailed ? 0.6 : 0.4, ease: 'power2.out' }, 0)
+      .to(model, { morph: 1, duration: 1, ease: 'sine.inOut' }, detailed ? 0.6 : 0.4)
       .to(model, { time: duration, duration, ease: 'none' }, 0)
     svg.dataset.motionState = 'intro'
     render()

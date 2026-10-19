@@ -565,6 +565,15 @@
     stroke-width: 3;
     stroke-linecap: round;
     stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+    opacity: 0;
+  }
+
+  .project-artwork__structure {
+    stroke: var(--color-control-border);
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    opacity: 0.65;
   }
 
   .project-artwork__signal {
@@ -580,7 +589,8 @@
   .project-artwork__activation {
     stroke: var(--color-accent-bright);
     stroke-width: 1.5;
-    opacity: 0.65;
+    opacity: 0;
+    fill: none;
   }
 
   @media (max-width: 63.999rem), (max-height: 39.999rem), (hover: none), (pointer: coarse) {
@@ -1279,7 +1289,7 @@
 
   @media (min-width: 64rem) {
     .hero__layout {
-      grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr);
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.15fr);
       column-gap: clamp(2rem, 5vw, 4rem);
     }
 
@@ -1288,7 +1298,7 @@
       grid-column: 2;
       grid-row: 2;
       inline-size: 100%;
-      max-inline-size: 32rem;
+      max-inline-size: 40rem;
       justify-self: end;
       max-block-size: none;
       overflow: visible;
@@ -1298,6 +1308,7 @@
 
     .hero__visual .neural-graph--desktop {
       display: block;
+      max-inline-size: 40rem;
       block-size: auto;
     }
 
@@ -1566,44 +1577,30 @@
   }
 
   .neural-graph--hero .neural-graph__edge {
-    stroke-width: 1;
-    opacity: 0.65;
+    vector-effect: non-scaling-stroke;
   }
 
-  .neural-graph--hero .neural-graph__edge--accent {
+  .neural-graph--hero .neural-graph__edge--primary {
+    stroke: var(--color-control-border);
+  }
+
+  .neural-graph--hero .neural-graph__edge--route {
     stroke: var(--color-accent-bright);
-    stroke-width: 1.4;
-    opacity: 0.8;
   }
 
   .neural-graph--hero .neural-graph__field {
     stroke: var(--color-control-border);
-    opacity: 0.45;
+    opacity: 0.24;
   }
 
   .neural-graph--hero .neural-graph__halos {
     fill: rgb(220 36 60 / 5%);
     stroke: var(--color-accent);
-    opacity: 0.5;
+    opacity: 0.22;
   }
 
   .neural-graph__signals {
     fill: var(--color-foreground);
-  }
-
-  .neural-graph__labels {
-    fill: var(--color-muted);
-    font-size: 14px;
-    font-weight: 400;
-    letter-spacing: 0.025em;
-  }
-
-  .neural-graph--mobile .neural-graph__labels {
-    font-size: 18px;
-  }
-
-  .neural-graph--mobile .neural-graph__edge {
-    stroke-width: 1.4;
   }
 
   .neural-graph__edge--accent {

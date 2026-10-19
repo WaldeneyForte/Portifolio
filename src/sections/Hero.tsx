@@ -25,7 +25,7 @@ export function Hero() {
         </div>
         <div className="hero__visual" data-hero-part="visual" aria-hidden="true">
           <div data-transition-visual="">
-            <NeuralGraph variant="hero" labels={copy.graphLayers} />
+            <NeuralGraph variant="hero" />
           </div>
         </div>
       </Container>

@@ -16,19 +16,23 @@ export function ProjectArtwork({ kind }: { kind: Project['artwork'] }) {
             <rect x="80" y="72" width="136" height="176" rx="12" className="project-artwork__panel" />
             <path d="M104 104h88M104 132h64M104 160h88M104 188h56M104 216h72" className="project-artwork__line" />
             </g>
-            <path d="M216 160h88m0 0v-64h88m-88 64v64h88" className="project-artwork__accent" />
-            <path data-project-flow="upper" pathLength="1" d="M216 160H304V96H392" className="project-artwork__flow" />
-            <path data-project-flow="lower" pathLength="1" d="M216 160H304V224H392" className="project-artwork__flow" />
-            <g data-project-stage="cells">
+            <rect data-project-stage="document-accent" x="80" y="72" width="136" height="176" rx="12" className="project-artwork__activation" />
+            <path d="M216 160h88m0 0v-64h88m-88 64v64h88" className="project-artwork__structure" />
+            <path data-project-flow="entry" pathLength="1" d="M216 160H304" className="project-artwork__flow" />
+            <path data-project-flow="upper" pathLength="1" d="M304 160V96H392" className="project-artwork__flow" />
+            <path data-project-flow="lower" pathLength="1" d="M304 160V224H392" className="project-artwork__flow" />
             <rect x="392" y="64" width="152" height="64" rx="10" className="project-artwork__panel" />
             <rect x="392" y="192" width="152" height="64" rx="10" className="project-artwork__panel" />
             <path d="M416 88h24m12 0h64M416 104h72M416 216h24m12 0h64M416 232h48" className="project-artwork__line" />
-            <rect x="416" y="84" width="8" height="8" className="project-artwork__cell" />
-            <rect x="416" y="212" width="8" height="8" className="project-artwork__cell" />
-            </g>
+            <rect data-project-stage="upper-cell" x="416" y="84" width="8" height="8" className="project-artwork__cell" />
+            <rect data-project-stage="lower-cell" x="416" y="212" width="8" height="8" className="project-artwork__cell" />
+            <rect data-project-stage="upper-accent" x="392" y="64" width="152" height="64" rx="10" className="project-artwork__activation" />
+            <rect data-project-stage="lower-accent" x="392" y="192" width="152" height="64" rx="10" className="project-artwork__activation" />
             <circle cx="304" cy="160" r="8" className="project-artwork__accent" />
-            <circle data-project-signal="upper" cx="216" cy="160" r="3" className="project-artwork__signal" />
-            <circle data-project-signal="lower" cx="216" cy="160" r="3" className="project-artwork__signal" />
+            <circle data-project-stage="processing" cx="304" cy="160" r="15" className="project-artwork__activation" />
+            <circle data-project-signal="entry" cx="216" cy="160" r="3.5" className="project-artwork__signal" />
+            <circle data-project-signal="upper" cx="304" cy="160" r="3.5" className="project-artwork__signal" />
+            <circle data-project-signal="lower" cx="304" cy="160" r="3.5" className="project-artwork__signal" />
           </>}
           {kind === 'speech' && <>
             <circle cx="320" cy="160" r="110" className="project-artwork__orbit" />
@@ -50,13 +54,16 @@ export function ProjectArtwork({ kind }: { kind: Project['artwork'] }) {
           </>}
           {kind === 'network' && <>
             <circle cx="340" cy="160" r="76" strokeDasharray="3 10" className="project-artwork__orbit" />
-            <path d="m198 104 98 40m-98 72 98-40m88-16h88" className="project-artwork__accent" />
-            <path data-project-flow="input" pathLength="1" d="M198 104L296 144M198 216L296 176" className="project-artwork__flow" />
+            <path d="m198 104 98 40m-98 72 98-40m88-16h88" className="project-artwork__structure" />
+            <path data-project-flow="input" pathLength="1" d="M198 104L296 144" className="project-artwork__flow" />
+            <path data-project-flow="input" pathLength="1" d="M198 216L296 176" className="project-artwork__flow" />
             <path data-project-flow="output" pathLength="1" d="M384 160H472" className="project-artwork__flow" />
             <circle cx="180" cy="104" r="22" className="project-artwork__panel" />
             <circle cx="180" cy="216" r="22" className="project-artwork__panel" />
             <circle cx="340" cy="160" r="44" className="project-artwork__panel" />
             <circle cx="490" cy="160" r="18" className="project-artwork__accent" />
+            <circle data-project-stage="input" cx="180" cy="104" r="25" className="project-artwork__activation" />
+            <circle data-project-stage="input" cx="180" cy="216" r="25" className="project-artwork__activation" />
             <circle data-project-stage="sum" cx="340" cy="160" r="50" className="project-artwork__activation" />
             <circle data-project-stage="output" cx="490" cy="160" r="24" className="project-artwork__activation" />
             <circle data-project-signal="first" cx="198" cy="104" r="3" className="project-artwork__signal" />
@@ -65,7 +72,7 @@ export function ProjectArtwork({ kind }: { kind: Project['artwork'] }) {
             <g className="project-artwork__symbol" textAnchor="middle" dominantBaseline="middle">
               <text x="180" y="104">x₁</text><text x="180" y="216">x₂</text>
               <text x="340" y="160" className="project-artwork__sum">Σ</text>
-              <text x="490" y="204">AND</text>
+              <text data-project-stage="and" x="490" y="204">AND</text>
             </g>
           </>}
         </g>

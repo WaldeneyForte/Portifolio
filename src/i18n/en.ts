@@ -23,7 +23,6 @@ export const en = {
     description: "I'm a Computer Science student working with AI for healthcare. I enjoy figuring out how models learn, turning data into useful solutions, and understanding what happens behind the frameworks.",
     projectsLink: 'Explore projects',
     aboutLink: 'More about me',
-    graphLayers: { input: 'Input', hidden1: 'Hidden 1', hidden2: 'Hidden 2', output: 'Output' },
     contactLink: 'Get in touch',
   },
   sections: {

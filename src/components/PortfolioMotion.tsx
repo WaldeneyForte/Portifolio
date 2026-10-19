@@ -16,6 +16,7 @@ type PortfolioMotionProps = { root: RefObject<HTMLElement | null> }
 export default function PortfolioMotion({ root }: PortfolioMotionProps) {
   const heroHistory = useRef({ finished: false })
   const transitionHistory = useRef({ contactFinished: false })
+  const projectHistory = useRef(new Set<string>())
 
   useGSAP(() => {
     const main = root.current
@@ -69,13 +70,14 @@ export default function PortfolioMotion({ root }: PortfolioMotionProps) {
       all('.section-heading, .contact-intro').forEach((element) => reveal(element, desktop ? 12 : 6))
       const transitions = createTransitionScenes(main, desktop, transitionHistory.current)
 
-      const projects = createProjectScenes(main, desktop)
+      const projects = createProjectScenes(main, desktop, projectHistory.current)
       const education = createEducationScene(main, desktop)
 
       function syncVisibility() {
         finite.forEach(({ sync }) => sync())
         heroScene?.syncVisibility()
         transitions.syncVisibility()
+        projects.syncVisibility()
       }
 
       // Refresh restores the current scroll position. While a native anchor is
@@ -113,6 +115,7 @@ export default function PortfolioMotion({ root }: PortfolioMotionProps) {
         if (!(event.target instanceof Element)) return
         const section = event.target.closest('section')
         if (section === hero) heroScene?.finish()
+        projects.finishCard(event.target.closest<HTMLElement>('[data-project]'))
         finite.forEach(({ animation, area }) => {
           if (area === section || area.closest('section') === section) animation.totalProgress(1).pause()
         })

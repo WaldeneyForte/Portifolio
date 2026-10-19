@@ -1,12 +1,9 @@
-import { heroGraphDesktop, heroGraphMobile, type GraphLayerLabels, type HeroGraphProfile } from '../data/heroGraph'
+import { graphEdgeAppearance, heroGraphDesktop, heroGraphMobile, type HeroGraphProfile } from '../data/heroGraph'
 import { graphPositions, graphSegment, graphSignal } from '../motion/graphGeometry'
 
-type NeuralGraphProps = { className?: string } & (
-  | { variant?: 'default'; labels?: never }
-  | { variant: 'hero'; labels: GraphLayerLabels }
-)
+type NeuralGraphProps = { className?: string; variant?: 'default' | 'hero' }
 
-function HeroGraph({ profile, labels, className }: { profile: HeroGraphProfile; labels: GraphLayerLabels; className: string }) {
+function HeroGraph({ profile, className }: { profile: HeroGraphProfile; className: string }) {
   const positions = graphPositions(profile.nodes, 1)
   return (
     <svg
@@ -20,7 +17,7 @@ function HeroGraph({ profile, labels, className }: { profile: HeroGraphProfile; 
     >
       <g className="neural-graph__field" data-graph-layer="field">
         {profile.id === 'desktop'
-          ? <path d="M30 132C18 151 18 197 30 216M445 168c12 15 12 41 0 56M207 34l18-3m104 271 17-6" />
+          ? <path d="M24 118c-8 16-8 44 0 60m432-42c8 16 8 44 0 60M145 24l20-2m156 273 20-3" />
           : <path d="M29 112c-8 12-8 36 0 48m420-45c8 12 8 36 0 48" />}
       </g>
       <g data-graph-layer="network">
@@ -33,12 +30,13 @@ function HeroGraph({ profile, labels, className }: { profile: HeroGraphProfile; 
               data-from={edge.from}
               data-to={edge.to}
               x1={from.x} y1={from.y} x2={to.x} y2={to.y}
-              className={`neural-graph__edge${edge.highlighted ? ' neural-graph__edge--accent' : ''}`}
+              className={`neural-graph__edge neural-graph__edge--${edge.importance}`}
+              style={graphEdgeAppearance[edge.importance]}
             />
           })}
         </g>
         <g className="neural-graph__halos" data-graph-layer="halos">
-          {profile.nodes.filter(node => node.radius >= (profile.id === 'desktop' ? 7 : 8)).map(node => {
+          {profile.nodes.filter(node => node.accent).map(node => {
             const position = positions.get(node.id)!
             return <circle key={node.id} data-node-ref={node.id} cx={position.x} cy={position.y} r={node.radius + 9} />
           })}
@@ -51,20 +49,17 @@ function HeroGraph({ profile, labels, className }: { profile: HeroGraphProfile; 
               data-node={node.id}
               data-node-layer={node.layer}
               cx={position.x} cy={position.y} r={node.radius}
-              className={`neural-graph__node${node.id === 'H1b' || node.id === 'H2b' ? ' neural-graph__node--accent' : ''}`}
+              className={`neural-graph__node${node.accent ? ' neural-graph__node--accent' : ''}`}
             />
           })}
         </g>
-        {/* Reserved for the next phase; signals are dormant in the static fallback. */}
+        {/* The finite intro owns these signals; the static fallback keeps them dormant. */}
         <g className="neural-graph__signals" data-graph-layer="signals" opacity="0">
           {profile.routes.map(route => {
             const start = graphSignal(route.nodes, 0, positions)
             return <circle key={route.id} data-signal={route.id} cx={start.x} cy={start.y} r="2.5" />
           })}
         </g>
-      </g>
-      <g className="neural-graph__labels" data-graph-layer="labels" textAnchor="middle">
-        {profile.labels.map(label => <text key={label.layer} data-layer-label={label.layer} x={label.x} y={label.y}>{labels[label.layer]}</text>)}
       </g>
     </svg>
   )
@@ -85,8 +80,8 @@ const edges = [
 
 export function NeuralGraph({ className = '', ...props }: NeuralGraphProps) {
   if (props.variant === 'hero') return <>
-    <HeroGraph profile={heroGraphDesktop} labels={props.labels} className={className} />
-    <HeroGraph profile={heroGraphMobile} labels={props.labels} className={className} />
+    <HeroGraph profile={heroGraphDesktop} className={className} />
+    <HeroGraph profile={heroGraphMobile} className={className} />
   </>
 
   return (

@@ -21,7 +21,6 @@ export const pt = {
     description: 'Sou estudante de Ciência da Computação e trabalho com IA aplicada à saúde. Gosto de explorar como modelos aprendem, transformar dados em soluções úteis e entender o que acontece por trás dos frameworks.',
     projectsLink: 'Conhecer projetos',
     aboutLink: 'Mais sobre mim',
-    graphLayers: { input: 'Entrada', hidden1: 'Oculta 1', hidden2: 'Oculta 2', output: 'Saída' },
     contactLink: 'Fale comigo',
   },
   sections: {

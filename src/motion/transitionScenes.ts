@@ -22,7 +22,11 @@ export function createTransitionScenes(main: HTMLElement, desktop: boolean, hist
     if (!source || !destination) return
     const connectors = [...main.querySelectorAll<SVGElement>(`[data-transition-connector="${name}"]`)]
     const timeline = gsap.timeline({ scrollTrigger: {
-      trigger: source, start: () => `bottom ${viewportLine(0.85)}px`,
+      trigger: source, start: () => name === 'hero-about'
+        // A short Hero can already fit above the entry line on a tall viewport.
+        // Keep its full opening pose until the visitor actually starts scrolling.
+        ? Math.max(0, source.getBoundingClientRect().bottom + scrollY - viewportLine(0.85))
+        : `bottom ${viewportLine(0.85)}px`,
       endTrigger: destination, end: () => `top ${viewportLine(0.3)}px`,
       scrub: true, invalidateOnRefresh: true,
     } })
@@ -40,7 +44,7 @@ export function createTransitionScenes(main: HTMLElement, desktop: boolean, hist
   const arrival = passage('hero-about', '#inicio', '#sobre')
   const visual = select('[data-transition-visual]')
   if (arrival && visual) arrival.fromTo(visual, { x: 0, y: 0, scale: 1 }, {
-    x: desktop ? -40 : 0, y: desktop ? 48 : 8, scale: desktop ? 0.72 : 1,
+    x: desktop ? -24 : 0, y: desktop ? 24 : 8, scale: desktop ? 0.86 : 1,
     transformOrigin: '50% 80%', ease: 'none', duration: 1,
   }, 0)
   const portrait = select('[data-transition-portrait]')
