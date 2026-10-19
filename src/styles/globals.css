@@ -137,11 +137,6 @@
     fill: var(--color-accent-bright);
   }
 
-  .contact-graph-scene {
-    position: absolute;
-    inset: 0;
-  }
-
   #experiencia .timeline-item::before {
     box-shadow: 0 0 0 calc(var(--transition-marker, 1) * 5px) rgb(220 36 60 / 12%);
   }
@@ -1070,23 +1065,107 @@
     padding-block: clamp(3.5rem, 7vw, 6rem);
   }
 
-  .contact-decoration {
+  .graph-backdrop {
     position: absolute;
     inset: 0;
     z-index: -1;
     overflow: hidden;
     pointer-events: none;
-    background: radial-gradient(ellipse at 90% 15%, rgb(220 36 60 / 7%), transparent 55%);
+    --graph-edge-color: rgb(183 183 193 / 22%);
+    --graph-route-color: rgb(220 36 60 / 25%);
+    --graph-node-color: rgb(183 183 193 / 32%);
   }
 
-  .contact-decoration .neural-graph {
+  .graph-backdrop--contact {
+    background: radial-gradient(ellipse at 100% 5%, rgb(220 36 60 / 7%), transparent 52%);
+  }
+
+  .section-with-backdrop {
+    position: relative;
+    isolation: isolate;
+    --backdrop-content-width: var(--content-width);
+    --backdrop-edge: max(var(--page-gutter), calc((100% - var(--backdrop-content-width)) / 2));
+  }
+
+  .section-with-backdrop--wide {
+    --backdrop-content-width: var(--content-width-wide);
+  }
+
+  .graph-backdrop:not(.graph-backdrop--contact) {
+    --graph-edge-color: rgb(183 183 193 / 16%);
+    --graph-route-color: rgb(220 36 60 / 16%);
+    --graph-node-color: rgb(183 183 193 / 22%);
+    /* Union of the gutters and connector padding; never mask the content. */
+    mask-image:
+      linear-gradient(90deg, #000 calc(var(--backdrop-edge) - 8px), transparent var(--backdrop-edge), transparent calc(100% - var(--backdrop-edge)), #000 calc(100% - var(--backdrop-edge) + 8px)),
+      linear-gradient(#000, transparent 2rem, transparent calc(100% - 2rem), #000);
+  }
+
+  .graph-backdrop--quiet {
+    opacity: 0.65;
+  }
+
+  @supports not (mask-image: linear-gradient(#000, transparent)) {
+    .graph-backdrop:not(.graph-backdrop--contact) {
+      display: none;
+    }
+  }
+
+  .graph-backdrop svg {
     position: absolute;
-    inset-block-start: 1rem;
-    inset-inline-end: -3rem;
-    inline-size: 34rem;
-    max-inline-size: none;
-    opacity: 0.3;
-    transform: rotate(-10deg);
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .graph-backdrop__edges {
+    fill: none;
+    stroke: var(--graph-edge-color);
+    stroke-width: 1;
+  }
+
+  .graph-backdrop__route {
+    fill: none;
+    stroke: var(--graph-route-color);
+    stroke-width: 1.25;
+  }
+
+  .graph-backdrop__nodes {
+    fill: var(--color-canvas);
+    stroke: var(--graph-node-color);
+    stroke-width: 1;
+  }
+
+  .graph-backdrop__signal {
+    fill: none;
+    stroke: var(--color-accent-bright);
+    stroke-width: 1.5;
+    stroke-dasharray: 0.12 0.88;
+    opacity: 0;
+  }
+
+  .graph-backdrop path {
+    vector-effect: non-scaling-stroke;
+  }
+
+  @media (max-width: 47.999rem) {
+    .graph-backdrop--contact svg {
+      inline-size: 180%;
+      inset-inline-start: -80%;
+      opacity: 0.5;
+    }
+
+    .graph-backdrop__edges path:nth-child(even),
+    .graph-backdrop__nodes circle:nth-child(even) {
+      display: none;
+    }
+
+    .graph-backdrop:not(.graph-backdrop--contact) {
+      opacity: 0.45;
+      mask-image:
+        linear-gradient(90deg, #000, transparent var(--backdrop-edge), transparent calc(100% - var(--backdrop-edge)), #000),
+        linear-gradient(#000, transparent 1.5rem, transparent calc(100% - 1.5rem), #000);
+    }
   }
 
   .contact-intro {
@@ -1102,11 +1181,24 @@
   }
 
   .contact-description {
-    max-inline-size: 52ch;
+    max-inline-size: 64ch;
     margin-block-start: 1.5rem;
     color: var(--color-muted);
     font-size: 1rem;
     line-height: 1.8;
+  }
+
+  .contact-invitation {
+    margin-block-start: 0.625rem;
+    color: var(--color-muted);
+    font-size: 1rem;
+    line-height: 1.8;
+  }
+
+  @media (min-width: 64rem) {
+    .contact-topic {
+      white-space: nowrap;
+    }
   }
 
   .contact-email-panel {
@@ -1175,10 +1267,6 @@
   @media (min-width: 48rem) {
     .contact-social .action-group {
       flex: 0 1 auto;
-    }
-
-    .contact-decoration .neural-graph {
-      opacity: 0.6;
     }
 
     .contact-email-row {

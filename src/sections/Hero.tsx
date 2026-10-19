@@ -2,13 +2,15 @@ import { ButtonLink } from '../components/ButtonLink'
 import { Container } from '../components/Container'
 import { NeuralGraph } from '../components/NeuralGraph'
 import { SectionConnector } from '../components/SectionConnector'
+import { GraphBackdrop } from '../components/GraphBackdrop'
 import { useLanguage } from '../i18n/context'
 
 export function Hero() {
   const { copy: { hero: copy }, content: { profile } } = useLanguage()
 
   return (
-    <section id="inicio" className="hero transition-section" aria-labelledby="hero-heading" tabIndex={-1}>
+    <section id="inicio" className="hero transition-section section-with-backdrop section-with-backdrop--wide" aria-labelledby="hero-heading" tabIndex={-1}>
+      <GraphBackdrop variant="hero" />
       <Container width="wide" className="hero__layout">
         <div className="hero__identity" data-hero-part="identity">
           <p className="hero__eyebrow">{copy.eyebrow}</p>

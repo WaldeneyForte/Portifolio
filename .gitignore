@@ -1,5 +1,10 @@
-# Documentação Markdown local: não enviar ao repositório
+# Documentação privada local; README.md e AGENTS.md permanecem públicos
+/docs-private/
 
+# Relatórios locais de testes
+/playwright-report/
+/test-results/
+/blob-report/
 
 # Dependências e builds
 node_modules/

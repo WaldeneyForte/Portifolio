@@ -5,7 +5,7 @@ import { useLanguage } from '../i18n/context'
 export function About() {
   const { copy, content: { profile } } = useLanguage()
   return (
-    <Section id="sobre" className="about-section transition-section">
+    <Section id="sobre" backdrop="quiet" className="about-section transition-section">
       <SectionConnector scene="hero-about" />
       <div className="about-layout">
         <div className="about-profile">

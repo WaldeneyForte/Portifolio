@@ -2,7 +2,7 @@ import { useRef, useState } from 'react'
 import { Button } from '../components/Button'
 import { ButtonLink } from '../components/ButtonLink'
 import { Container } from '../components/Container'
-import { NeuralGraph } from '../components/NeuralGraph'
+import { GraphBackdrop } from '../components/GraphBackdrop'
 import { SectionConnector } from '../components/SectionConnector'
 import { useLanguage } from '../i18n/context'
 
@@ -32,12 +32,13 @@ export function Contact() {
   return (
     <section id="contato" className="page-section content-section contact-section" aria-labelledby="contato-heading" tabIndex={-1}>
       <SectionConnector scene="contact" />
-      <div className="contact-decoration" aria-hidden="true"><div className="contact-graph-scene" data-transition-contact=""><NeuralGraph /></div></div>
+      <GraphBackdrop variant="contact" />
       <Container>
         <div className="contact-intro">
           <p className="section-heading__eyebrow">{dictionary.sections.contato.title}</p>
           <h2 id="contato-heading" className="contact-title">{copy.title}</h2>
-          <p className="contact-description">{copy.description}</p>
+          <p className="contact-description">{copy.description} <span className="contact-topic">{copy.topic}</span></p>
+          <p className="contact-invitation">{copy.invitation}</p>
         </div>
         <div className="contact-email-panel">
           <p className="contact-email-label">{copy.emailLabel}</p>

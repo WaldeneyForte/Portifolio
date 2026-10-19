@@ -6,7 +6,7 @@ import { useLanguage } from '../i18n/context'
 export function Education() {
   const { content: { education } } = useLanguage()
   return (
-    <Section id="formacao" rhythm="compact">
+    <Section id="formacao" backdrop="quiet" rhythm="compact">
       <div className="education-timeline" data-education-timeline="">
         <div className="education-timeline__rail" aria-hidden="true">
           <span className="education-timeline__progress" data-education-progress="" />

@@ -60,7 +60,9 @@ export const pt = {
   },
   contact: {
     title: 'Vamos construir a próxima conexão.',
-    description: 'Curtiu algum projeto ou quer trocar uma ideia sobre IA e dados? Me encontre por aqui.',
+    description: 'Curtiu algum projeto ou quer trocar uma ideia sobre',
+    topic: 'IA e dados?',
+    invitation: 'Me encontre por aqui.',
     emailLabel: 'E-mail para contato',
     copyEmail: 'Copiar e-mail',
     copyingEmail: 'Copiando e-mail…',

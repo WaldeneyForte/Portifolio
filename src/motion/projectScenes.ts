@@ -64,8 +64,9 @@ export function createProjectScenes(main: HTMLElement, desktop: boolean, history
     }
     function flow(name: string, at: number, duration: number) {
       const elements = all(`[data-project-flow="${name}"]`)
+      // CSS owns the resting offset; retain subpixel progress on pathLength=1.
       timeline.fromTo(elements, { strokeDashoffset: 1, opacity: 0.9 }, {
-        strokeDashoffset: 0, opacity: 0.9, duration, ease: 'none', immediateRender: false,
+        strokeDashoffset: 0, autoRound: false, opacity: 0.9, duration, ease: 'none', immediateRender: false,
       }, at).to(elements, { opacity: 0, duration: 0.25 }, at + duration)
     }
     function signal(name: string, points: readonly (readonly [number, number])[], at: number, duration: number) {

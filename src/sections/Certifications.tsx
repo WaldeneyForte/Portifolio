@@ -11,7 +11,7 @@ export function Certifications() {
   ] as const
 
   return (
-    <Section id="certificacoes" rhythm="compact">
+    <Section id="certificacoes" backdrop="quiet" rhythm="compact">
       <div className="certification-groups">
         {groups.map((group) => {
           const entries = visible.filter((certification) => certification.kind === group.kind)

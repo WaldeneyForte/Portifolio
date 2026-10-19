@@ -62,7 +62,9 @@ export const en = {
   },
   contact: {
     title: 'Let’s build the next connection.',
-    description: 'Interested in a project or want to talk about AI and data? You can reach me here.',
+    description: 'Interested in a project or want to talk about',
+    topic: 'AI and data?',
+    invitation: 'You can reach me here.',
     emailLabel: 'Contact email',
     copyEmail: 'Copy email',
     copyingEmail: 'Copying email…',

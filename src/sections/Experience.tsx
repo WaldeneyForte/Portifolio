@@ -5,7 +5,7 @@ import { useLanguage } from '../i18n/context'
 
 export function Experience() {
   const { content: { experience } } = useLanguage()
-  return <Section id="experiencia" className="transition-section">
+  return <Section id="experiencia" backdrop="quiet" className="transition-section">
     <SectionConnector scene="projects-experience" />
     <ol className="timeline">{experience.map((entry) => <TimelineItem key={entry.id} entry={entry} />)}</ol>
   </Section>
