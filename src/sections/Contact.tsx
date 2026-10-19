@@ -3,6 +3,7 @@ import { Button } from '../components/Button'
 import { ButtonLink } from '../components/ButtonLink'
 import { Container } from '../components/Container'
 import { NeuralGraph } from '../components/NeuralGraph'
+import { SectionConnector } from '../components/SectionConnector'
 import { useLanguage } from '../i18n/context'
 
 export function Contact() {
@@ -30,7 +31,8 @@ export function Contact() {
 
   return (
     <section id="contato" className="page-section content-section contact-section" aria-labelledby="contato-heading" tabIndex={-1}>
-      <div className="contact-decoration" aria-hidden="true"><NeuralGraph /></div>
+      <SectionConnector scene="contact" />
+      <div className="contact-decoration" aria-hidden="true"><div className="contact-graph-scene" data-transition-contact=""><NeuralGraph /></div></div>
       <Container>
         <div className="contact-intro">
           <p className="section-heading__eyebrow">{dictionary.sections.contato.title}</p>

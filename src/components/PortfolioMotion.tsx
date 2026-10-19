@@ -4,6 +4,9 @@ import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { createHeroScene } from '../motion/heroScene'
 import { createLayoutRefresh } from '../motion/layoutRefresh'
+import { createTransitionScenes } from '../motion/transitionScenes'
+import { createProjectScenes } from '../motion/projectScenes'
+import { createEducationScene } from '../motion/educationScene'
 
 gsap.registerPlugin(useGSAP, ScrollTrigger)
 
@@ -12,6 +15,7 @@ type PortfolioMotionProps = { root: RefObject<HTMLElement | null> }
 // Optional enhancement: no CSS hides content before this module loads.
 export default function PortfolioMotion({ root }: PortfolioMotionProps) {
   const heroHistory = useRef({ finished: false })
+  const transitionHistory = useRef({ contactFinished: false })
 
   useGSAP(() => {
     const main = root.current
@@ -63,35 +67,47 @@ export default function PortfolioMotion({ root }: PortfolioMotionProps) {
       }
 
       all('.section-heading, .contact-intro').forEach((element) => reveal(element, desktop ? 12 : 6))
-      const portrait = select('.about-portrait')
-      if (portrait) reveal(portrait, 8)
+      const transitions = createTransitionScenes(main, desktop, transitionHistory.current)
 
-      if (desktop) {
-        for (const card of all<HTMLElement>('[data-project]')) {
-          const diagram = card.querySelector('[data-artwork-layer="diagram"]')
-          if (!diagram) continue
-          gsap.fromTo(diagram, { y: 10, scale: 0.98, transformOrigin: '50% 50%' }, {
-            y: -10, scale: 1.02, ease: 'none', immediateRender: false,
-            scrollTrigger: { trigger: card, start: 'top bottom', end: 'bottom top', scrub: true, invalidateOnRefresh: true },
-          })
-        }
-        const visual = select('#inicio [data-hero-part="visual"]')
-        if (visual) gsap.to(visual, { y: 16, ease: 'none', scrollTrigger: { trigger: hero, start: 'top top', end: 'bottom top', scrub: true } })
-        const contactGraph = select('#contato .neural-graph')
-        if (contactGraph) gsap.fromTo(contactGraph, { y: 12 }, {
-          y: -12, ease: 'none', immediateRender: false,
-          scrollTrigger: { trigger: '#contato', start: 'top bottom', end: 'bottom bottom', scrub: true },
-        })
-      } else {
-        all('[data-project-part="artwork"]').forEach((element) => reveal(element, 6))
-      }
+      const projects = createProjectScenes(main, desktop)
+      const education = createEducationScene(main, desktop)
 
       function syncVisibility() {
         finite.forEach(({ sync }) => sync())
         heroScene?.syncVisibility()
+        transitions.syncVisibility()
       }
 
-      const layout = createLayoutRefresh(main, () => ScrollTrigger.refresh())
+      // Refresh restores the current scroll position. While a native anchor is
+      // moving, the mobile menu's resize must not cancel that browser animation.
+      let anchorPending = false
+      let anchorDirty = false
+      let anchorTimer = 0
+      const layout = createLayoutRefresh(main, () => {
+        if (anchorPending) anchorDirty = true
+        else ScrollTrigger.refresh()
+      })
+      function settleAnchor() {
+        if (!anchorPending) return
+        anchorPending = false
+        clearTimeout(anchorTimer)
+        if (anchorDirty) {
+          anchorDirty = false
+          layout.request()
+        }
+      }
+      document.addEventListener('click', (event) => {
+        if (!(event.target instanceof Element) || event.defaultPrevented) return
+        const link = event.target.closest<HTMLAnchorElement>('a[href]')
+        if (!link || link.origin !== location.origin || link.pathname !== location.pathname || link.search !== location.search || !link.hash) return
+        const destination = document.getElementById(decodeURIComponent(link.hash.slice(1)))
+        if (!destination || !main.contains(destination)) return
+        anchorPending = true
+        clearTimeout(anchorTimer)
+        // Also release for an already aligned destination / browsers without scrollend.
+        anchorTimer = window.setTimeout(settleAnchor, 1800)
+      }, { signal: events.signal, capture: true })
+      document.addEventListener('scrollend', settleAnchor, { signal: events.signal })
       document.addEventListener('visibilitychange', syncVisibility, { signal: events.signal })
       main.addEventListener('focusin', (event) => {
         if (!(event.target instanceof Element)) return
@@ -104,7 +120,11 @@ export default function PortfolioMotion({ root }: PortfolioMotionProps) {
 
       return () => {
         events.abort()
+        clearTimeout(anchorTimer)
         layout.destroy()
+        transitions.destroy()
+        projects.destroy()
+        education.destroy()
         heroScene?.destroy()
         // matchMedia has already reverted its tweens and triggers before cleanup.
         original.forEach(({ element, attributes }) => {

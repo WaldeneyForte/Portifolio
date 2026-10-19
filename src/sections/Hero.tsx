@@ -1,13 +1,14 @@
 import { ButtonLink } from '../components/ButtonLink'
 import { Container } from '../components/Container'
 import { NeuralGraph } from '../components/NeuralGraph'
+import { SectionConnector } from '../components/SectionConnector'
 import { useLanguage } from '../i18n/context'
 
 export function Hero() {
   const { copy: { hero: copy }, content: { profile } } = useLanguage()
 
   return (
-    <section id="inicio" className="hero" aria-labelledby="hero-heading" tabIndex={-1}>
+    <section id="inicio" className="hero transition-section" aria-labelledby="hero-heading" tabIndex={-1}>
       <Container width="wide" className="hero__layout">
         <div className="hero__identity" data-hero-part="identity">
           <p className="hero__eyebrow">{copy.eyebrow}</p>
@@ -23,7 +24,9 @@ export function Hero() {
           </div>
         </div>
         <div className="hero__visual" data-hero-part="visual" aria-hidden="true">
-          <NeuralGraph variant="hero" labels={copy.graphLayers} />
+          <div data-transition-visual="">
+            <NeuralGraph variant="hero" labels={copy.graphLayers} />
+          </div>
         </div>
       </Container>
       <Container width="wide" className="hero__continuity">
@@ -33,6 +36,7 @@ export function Hero() {
         </a>
         <span className="hero__trail" aria-hidden="true" />
       </Container>
+      <SectionConnector scene="hero-about" end />
     </section>
   )
 }
